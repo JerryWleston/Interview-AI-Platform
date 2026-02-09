@@ -1,0 +1,108 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: interview-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      TZ: Asia/Shanghai
+    ports:
+      - "13306:3306"
+    volumes:
+      - interview_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [interview_net]
+
+  redis:
+    image: redis:7
+    container_name: interview-redis
+    ports:
+      - "16379:6379"
+    volumes:
+      - interview_redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    networks: [interview_net]
+
+  kafka:
+    image: apache/kafka:3.7.1
+    container_name: interview-kafka
+    ports:
+      - "19092:19092"   # 外部访问端口
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+
+      # 监听：容器内9092给内部，19092给外部，9093给controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,EXTERNAL://0.0.0.0:19092,CONTROLLER://0.0.0.0:9093
+
+      # 对外宣告：内部用容器名，外部用localhost
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://interview-kafka:9092,EXTERNAL://localhost:19092
+
+      # listener 名称映射
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+      # KRaft controller quorum：必须用容器可达的地址（不能写localhost）
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@interview-kafka:9093
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    volumes:
+      - interview_kafka_data:/var/lib/kafka/data
+    networks: [interview_net]
+
+  neo4j:
+    image: neo4j:5
+    container_name: interview-neo4j
+    environment:
+      NEO4J_AUTH: ${NEO4J_AUTH}
+      NEO4J_server_memory_heap_initial__size: 512m
+      NEO4J_server_memory_heap_max__size: 512m
+      NEO4J_server_memory_pagecache_size: 512m
+    ports:
+      - "17474:7474"
+      - "17687:7687"
+    volumes:
+      - interview_neo4j_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7474 >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    networks: [interview_net]
+
+  qdrant:
+    image: qdrant/qdrant:v1.10.1
+    container_name: interview-qdrant
+    ports:
+      - "16333:6333"
+    volumes:
+      - interview_qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:6333/healthz >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    networks: [interview_net]
+
+networks:
+  interview_net:
+
+volumes:
+  interview_mysql_data:
+  interview_redis_data:
+  interview_kafka_data:
+  interview_neo4j_data:
+  interview_qdrant_data:
