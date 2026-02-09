@@ -1,0 +1,25 @@
+# OS
+.DS_Store
+
+# IntelliJ / IDEA
+.idea/
+*.iml
+out/
+
+# Maven / Gradle
+target/
+*.log
+
+# VSCode
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# Node (if needed later)
+node_modules/
+dist/
