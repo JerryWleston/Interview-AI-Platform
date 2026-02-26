@@ -13,6 +13,9 @@
 ## 技术栈
 `Spring Boot` + `LangChain` + `Neo4j` + `Redis` + `MySQL` + `Kafka` + `Qdrant`
 
+## 启动方法
+1. 启动docker 
+
 ## Day One
 **目标**：搭建知识库装载基本链路和知识问答基本链路。
 1. 知识库装载的基本搭建
