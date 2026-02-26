@@ -14,7 +14,8 @@
 `Spring Boot` + `LangChain` + `Neo4j` + `Redis` + `MySQL` + `Kafka` + `Qdrant`
 
 ## 启动方法
-1. 启动docker 
+//需要切换到项目的根目录 
+1. 启动docker start method cd infra && docker compose --env-file .env up -d 
 
 ## Day One
 **目标**：搭建知识库装载基本链路和知识问答基本链路。
