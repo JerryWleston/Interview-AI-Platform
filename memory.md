@@ -1,0 +1,42 @@
+# Memory Design
+
+> Reference: Letta
+
+## 1. 设计目标
+
+Memory 系统用于支持 Interview AI Platform 中的长期状态管理、上下文构建和个性化能力。
+
+核心目标包括：
+
+- 区分短期任务状态与长期记忆
+- 区分原始历史记录与提炼后的结构化知识
+- 控制进入模型上下文的内容规模
+- 支持记忆的检索、更新、冲突处理和版本追踪
+- 将用户记忆、技能记忆与外部知识库解耦
+- 在有限 Context Window 下实现按需加载
+
+---
+
+## 2. Memory 分类
+
+| Memory 类型 | 保存内容 | 加载方式 |
+|---|---|---|
+| **Working Memory** | 当前任务状态、当前题目、追问线索、待解决问题 | 随当前会话进入上下文，通过 Checkpoint 保存 |
+| **Core Memory** | Persona、稳定用户偏好、长期行为规则、关键背景、顶层记忆索引 | 精简后直接进入 System Prompt |
+| **Deferred Memory** | 用户详细画像、项目细节、架构说明、经验总结和参考资料，以 Markdown 保存 | 一级、二级索引及简短文件描述进入 System Prompt；文件正文按需读取
+| **Skills** | 可复用的多步骤操作流程、脚本和模板 | Skill 名称、描述进入上下文；匹配任务后加载正文 |
+| **Episodic Memory / Recall** | 原始历史对话、工具调用、工具结果、事件时间 | 数据库持久化，通过检索召回；保留消息 ID，并支持前后文扩展 |
+| **Knowledge Base** | 简历、JD、题库、企业资料和外部文档 | 独立的文档 RAG，按需进入当前上下文 |
+
+---
+
+## 3. Memory Type 与 Context Tier
+
+Memory 的设计需要区分两个不同维度：
+
+```text
+Memory Type
+描述“这是什么类型的信息”
+
+Context Tier
+描述“这条信息以什么方式进入上下文”
