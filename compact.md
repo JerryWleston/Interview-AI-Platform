@@ -47,12 +47,12 @@ B = Context Window
 
 初始采用三级压力策略：
 
-| Level     |                       Trigger | Action                       |        Target |
-| --------- | ----------------------------: | ---------------------------- | ------------: |
-| Normal    |                     `< 55% B` | 不压缩                          |             — |
-| Soft      |                     `≥ 55% B` | 去重、Tool Reducer、清理重复 Recall  |     `< 50% B` |
-| Compact   |                     `≥ 75% B` | Rolling Summary + Token Tail | `55% ~ 60% B` |
-| Emergency | `≥ 90% B` 或 Provider Overflow | 隐藏已覆盖历史 + 受限安全裁剪             |     `< 70% B` |
+| Level     |                           Trigger | Action                              |          Target |
+| --------- | --------------------------------: | ----------------------------------- | --------------: |
+| Normal    |                       `< 55% B` | 不压缩                              |              — |
+| Soft      |                      `≥ 55% B` | 去重、Tool Reducer、清理重复 Recall |     `< 50% B` |
+| Compact   |                      `≥ 75% B` | Rolling Summary + Token Tail        | `55% ~ 60% B` |
+| Emergency | `≥ 90% B` 或 Provider Overflow | 隐藏已覆盖历史 + 受限安全裁剪       |     `< 70% B` |
 
 阈值作为初始配置，最终由不同模型、Provider 和 InterviewBench 数据动态调整。
 

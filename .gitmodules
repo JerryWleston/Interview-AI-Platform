@@ -1,0 +1,19 @@
+[submodule "referenceProject/adk-python"]
+    path = referenceProject/adk-python
+    url = https://github.com/google/adk-python.git
+
+[submodule "referenceProject/agent-framework"]
+    path = referenceProject/agent-framework
+    url = https://github.com/microsoft/agent-framework.git
+
+[submodule "referenceProject/hermes-agent"]
+    path = referenceProject/hermes-agent
+    url = https://github.com/NousResearch/hermes-agent.git
+
+[submodule "referenceProject/letta-code"]
+    path = referenceProject/letta-code
+	url = https://github.com/letta-ai/letta-code.git
+
+[submodule "referenceProject/openai-agents-python"]
+    path = referenceProject/openai-agents-python
+    url = https://github.com/openai/openai-agents-python.git
